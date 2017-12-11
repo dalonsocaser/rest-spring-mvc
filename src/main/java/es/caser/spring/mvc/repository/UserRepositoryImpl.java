@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import es.caser.spring.mvc.exception.UserNotFoundException;
 import es.caser.spring.mvc.model.User;
 
 @Repository
@@ -26,9 +27,14 @@ public class UserRepositoryImpl implements IUserRepository{
 		Optional<User> matchingObject = users.stream().
 			    filter(p -> p.getUsername().equals(username)).
 			    findFirst();
-		return matchingObject.orElse(null);
+		return matchingObject.orElseThrow(() -> new UserNotFoundException(username));
 	}
 	private User createUser(String name, String surname, String username, String password) {
 		return new User(name, surname, username, password);
+	}
+	@Override
+	public  List<User> findAll() {
+		
+		return users;
 	}
 }
